@@ -1,7 +1,9 @@
 version: '3.8'
 services:
+
+  # MySQL
   mysql:
-    profiles: ["all", "database", "mysql"]
+    profiles: ["all", "mysql"]
     image: mysql:8.0
     cap_add:
       - SYS_NICE
@@ -16,6 +18,22 @@ services:
       - mysql-db:/var/lib/mysql
       - ./mysql-db/init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./.env:/.env
+  
+  # PostgreSQL.
+  postgres:
+    profiles: ["all", "postgres"]
+    image: postgres:13.3-alpine
+    ports:
+      - "${postgres_port}:5432"
+    environment:  # https://github.com/docker-library/docs/tree/master/postgres#environment-variables
+      - POSTGRES_USER=${postgres_admin_user}
+      - POSTGRES_PASSWORD=${postgres_admin_password}
+      - POSTGRES_DB=${postgres_database_name}
+    volumes:
+      - ./.env:/.env
+      - postgres-volume:/var/lib/postgresql/data
 volumes:
   mysql-db:
     driver: local
+  postgres-volume:
+    external: false
