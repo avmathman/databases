@@ -32,8 +32,18 @@ services:
     volumes:
       - ./.env:/.env
       - postgres-volume:/var/lib/postgresql/data
+  
+  #MongoDB
+  mongodb:
+    profiles: ["all", "mongodb"]
+    image: mongo:6-jammy
+    ports:
+      - '27017:27017'
+    volumes:
+      - dbdata6:/data/db
 volumes:
   mysql-db:
     driver: local
   postgres-volume:
     external: false
+  dbdata6:
